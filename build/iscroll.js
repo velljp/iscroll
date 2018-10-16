@@ -1,4 +1,4 @@
-/*! iScroll v5.2.0-snapshot ~ (c) 2008-2017 Matteo Spinelli ~ http://cubiq.org/license */
+/*! iScroll v5.2.0-snapshot ~ (c) 2008-2018 Matteo Spinelli ~ http://cubiq.org/license */
 (function (window, document, Math) {
 var rAF = window.requestAnimationFrame	||
 	window.webkitRequestAnimationFrame	||
@@ -40,7 +40,7 @@ var utils = (function () {
 	};
 
 	me.addEvent = function (el, type, fn, capture) {
-		el.addEventListener(type, fn, !!capture);
+		el.addEventListener(type, fn, { passive: false });
 	};
 
 	me.removeEvent = function (el, type, fn, capture) {
@@ -188,9 +188,9 @@ var utils = (function () {
 		mousemove: 2,
 		mouseup: 2,
 
-		pointerdown: 3,
-		pointermove: 3,
-		pointerup: 3,
+		pointerdown: 1,
+		pointermove: 1,
+		pointerup: 1,
 
 		MSPointerDown: 3,
 		MSPointerMove: 3,
@@ -257,7 +257,7 @@ var utils = (function () {
 		var target = e.target,
 			ev;
 
-		if ( !(/(SELECT|INPUT|TEXTAREA)/i).test(target.tagName) ) {
+    if ( !(/(SELECT|TEXTAREA)/i).test(target.tagName) ) {
 			// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/initMouseEvent
 			// initMouseEvent is deprecated.
 			ev = document.createEvent(window.MouseEvent ? 'MouseEvents' : 'Event');
@@ -314,6 +314,7 @@ var utils = (function () {
 
 	return me;
 })();
+
 function IScroll (el, options) {
 	this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
 	this.scroller = this.wrapper.children[0];
@@ -321,16 +322,16 @@ function IScroll (el, options) {
 
 	this.options = {
 
-		resizeScrollbars: true,
+    		resizeScrollbars: true,
 
 		mouseWheelSpeed: 20,
 
 		snapThreshold: 0.334,
 
 // INSERT POINT: OPTIONS
-		disablePointer : !utils.hasPointer,
-		disableTouch : utils.hasPointer || !utils.hasTouch,
-		disableMouse : utils.hasPointer || utils.hasTouch,
+		disablePointer : false,
+		disableTouch : false,
+		disableMouse : false,
 		startX: 0,
 		startY: 0,
 		scrollY: true,
@@ -342,7 +343,7 @@ function IScroll (el, options) {
 		bounceEasing: '',
 
 		preventDefault: true,
-		preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
+    preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|A)$/ },
 
 		HWCompositing: true,
 		useTransition: true,
@@ -769,7 +770,7 @@ IScroll.prototype = {
 
 		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
-		
+
 		if ( !this.hasHorizontalScroll ) {
 			this.maxScrollX = 0;
 			this.scrollerWidth = this.wrapperWidth;
@@ -783,7 +784,7 @@ IScroll.prototype = {
 		this.endTime = 0;
 		this.directionX = 0;
 		this.directionY = 0;
-		
+
 		if(utils.hasPointer && !this.options.disablePointer) {
 			// The wrapper should have `touchAction` property for using pointerEvent.
 			this.wrapper.style[utils.style.touchAction] = utils.getTouchAction(this.options.eventPassthrough, true);
@@ -802,7 +803,7 @@ IScroll.prototype = {
 
 // INSERT POINT: _refresh
 
-	},	
+	},
 
 	on: function (type, fn) {
 		if ( !this._events[type] ) {
@@ -1032,6 +1033,7 @@ IScroll.prototype = {
 
 		return { x: x, y: y };
 	},
+
 	_initIndicators: function () {
 		var interactive = this.options.interactiveScrollbars,
 			customStyle = typeof this.options.scrollbars != 'string',

@@ -38,7 +38,7 @@ var utils = (function () {
 	};
 
 	me.addEvent = function (el, type, fn, capture) {
-		el.addEventListener(type, fn, !!capture);
+		el.addEventListener(type, fn, { passive: false });
 	};
 
 	me.removeEvent = function (el, type, fn, capture) {
@@ -186,9 +186,9 @@ var utils = (function () {
 		mousemove: 2,
 		mouseup: 2,
 
-		pointerdown: 3,
-		pointermove: 3,
-		pointerup: 3,
+		pointerdown: 1,
+		pointermove: 1,
+		pointerup: 1,
 
 		MSPointerDown: 3,
 		MSPointerMove: 3,
@@ -255,7 +255,7 @@ var utils = (function () {
 		var target = e.target,
 			ev;
 
-		if ( !(/(SELECT|INPUT|TEXTAREA)/i).test(target.tagName) ) {
+    if ( !(/(SELECT|TEXTAREA)/i).test(target.tagName) ) {
 			// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/initMouseEvent
 			// initMouseEvent is deprecated.
 			ev = document.createEvent(window.MouseEvent ? 'MouseEvents' : 'Event');

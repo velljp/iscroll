@@ -6,10 +6,10 @@ function IScroll (el, options) {
 
 	this.options = {
 
-// INSERT POINT: OPTIONS
-		disablePointer : !utils.hasPointer,
-		disableTouch : utils.hasPointer || !utils.hasTouch,
-		disableMouse : utils.hasPointer || utils.hasTouch,
+    // INSERT POINT: OPTIONS
+		disablePointer : false,
+		disableTouch : false,
+		disableMouse : false,
 		startX: 0,
 		startY: 0,
 		scrollY: true,
@@ -21,7 +21,7 @@ function IScroll (el, options) {
 		bounceEasing: '',
 
 		preventDefault: true,
-		preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
+    preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT|A)$/ },
 
 		HWCompositing: true,
 		useTransition: true,
@@ -409,7 +409,7 @@ IScroll.prototype = {
 
 		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
-		
+
 		if ( !this.hasHorizontalScroll ) {
 			this.maxScrollX = 0;
 			this.scrollerWidth = this.wrapperWidth;
@@ -423,7 +423,7 @@ IScroll.prototype = {
 		this.endTime = 0;
 		this.directionX = 0;
 		this.directionY = 0;
-		
+
 		if(utils.hasPointer && !this.options.disablePointer) {
 			// The wrapper should have `touchAction` property for using pointerEvent.
 			this.wrapper.style[utils.style.touchAction] = utils.getTouchAction(this.options.eventPassthrough, true);
@@ -442,7 +442,7 @@ IScroll.prototype = {
 
 // INSERT POINT: _refresh
 
-	},	
+	},
 
 	on: function (type, fn) {
 		if ( !this._events[type] ) {
