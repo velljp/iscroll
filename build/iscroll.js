@@ -44,7 +44,7 @@ var utils = (function () {
 	};
 
 	me.removeEvent = function (el, type, fn, capture) {
-		el.removeEventListener(type, fn, !!capture);
+		el.removeEventListener(type, fn, { passive: false });
 	};
 
 	me.prefixPointerEvent = function (pointerEvent) {
@@ -480,7 +480,7 @@ IScroll.prototype = {
 		}
 
 		if ( this.options.preventDefault && !utils.isBadAndroid && !utils.preventDefaultException(e.target, this.options.preventDefaultException) ) {
-			e.preventDefault();
+			// e.preventDefault();
 		}
 
 		var point = e.touches ? e.touches[0] : e,
@@ -620,7 +620,7 @@ IScroll.prototype = {
 		}
 
 		if ( this.options.preventDefault && !utils.preventDefaultException(e.target, this.options.preventDefaultException) ) {
-			e.preventDefault();
+			// e.preventDefault();
 		}
 
 		var point = e.changedTouches ? e.changedTouches[0] : e,
